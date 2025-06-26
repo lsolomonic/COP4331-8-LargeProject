@@ -1,8 +1,6 @@
+require('dotenv').config();
 const { MongoClient } = require('mongodb');
-
-const url =
-  'mongodb+srv://RickLeinecker:COP4331Rocks@cluster0.moiaqeh.mongodb.net/COP4331Cards?retryWrites=true&w=majority&appName=Cluster0';
-
+const url = process.env.MONGO_URI;
 const client = new MongoClient(url);
 
 client.connect().then(() => {
