@@ -25,7 +25,16 @@ function Login() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        Axios.post("http://localhost:5000/api/login", {
+        var ext = ""
+        if (logState == "Please Log In:") {
+            ext = "login";
+        } else {
+            ext = "register";
+        }
+
+        let url = "http://localhost:500/api/" + ext;
+
+        Axios.post(url, {
             login: formData.username,
             password: formData.password,
             email: formData.email
