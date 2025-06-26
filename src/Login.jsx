@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './App.css'
+import { Axios } from 'axios'
 
 function Login() {
 
@@ -24,13 +25,11 @@ function Login() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        //check state
-        if (logState == "Please Log In:") {
-        //send to login API
-        } else {
-        //send to register API 
-        }
-
+        Axios.post("http://localhost:5000/api/login", {
+            login: formData.username,
+            password: formData.password,
+            email: formData.email
+        })
     }
 
     const handleLog = (e) => {
