@@ -1,14 +1,18 @@
 import { useState } from 'react'
 import './App.css'
 import Login from './Login'
+import { BrowserRouter, Route, Routes } from 'react-router';
 
 function App() {
   return (
-    <>
-        <h1 className="text-[50px] text-sky-500 ml-20 ">Project Title</h1>
-        <Login /> 
-    </>
-  )
+    <div>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Login />} />
+        </Routes>
+      </BrowserRouter>
+    </div>
+  );
 }
 
 export default App
