@@ -7,4 +7,11 @@ module.exports = {
     "./src/components/**/*.{js,jsx,ts,tsx}",
   ],
   plugins: [],
+  theme: {
+    extend: {
+      colors: {
+        'bgray' : '#34414e'
+      }
+    }
+  }
 }
