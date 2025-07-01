@@ -10,7 +10,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'bgray' : '#34414e'
+        'bgray' : '#34414e',
+        'tlight': '#D9D9D9'
       }
     }
   }

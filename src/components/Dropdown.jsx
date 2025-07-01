@@ -5,15 +5,16 @@ import {
   PencilIcon,
   Square2StackIcon,
   TrashIcon,
+  Bars3Icon
 } from '@heroicons/react/16/solid'
 
 function Dropdown() {
     return (
         <>
-            <div className="float-right mr-10">
+            <div>
                 <Menu>
                     <MenuButton className="inline-flex items-center gap-2 rounded-md  px-3 py-1.5 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-800 data-open:bg-gray-800">
-                    <img src='/menu.png' className="w-20 h-20"></img>
+                        <Bars3Icon className="w-20 h-20"></Bars3Icon>
                     <ChevronDownIcon className="size-4 fill-white/60" />
                     </MenuButton>
 
