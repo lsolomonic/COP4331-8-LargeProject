@@ -1,6 +1,7 @@
 import {useState} from "react"
 import Dropdown from '../components/Dropdown'
 import MapComponent from '../components/Map'
+import Locations from '../components/Locations'
 
 function Homepage() {
     const [name, setName] = useState("testname");
@@ -15,7 +16,9 @@ function Homepage() {
                     <Dropdown />
                 </div>
             </div>
-            <MapComponent />
+            <MapComponent /> <br />
+            <hr className="border-3 border-white"></hr>
+            <Locations />
         </>
     )
 }
