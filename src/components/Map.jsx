@@ -4,7 +4,7 @@ import { useState } from 'react'
 function MapComponent() {
 
     return (
-        <APIProvider apiKey={'api-key-here'}>
+        <APIProvider apiKey={import.meta.env.VITE_MAPS_API_KEY}>
             <div className="max-w-7xl h-125 ml-auto mr-auto">
                 <Map
                     defaultZoom={15}
