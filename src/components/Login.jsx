@@ -4,6 +4,13 @@ import { Axios } from 'axios'
 
 function Login() {
 
+    function buildPath(route) {
+        if (process.env.NODE_ENV != 'development') {
+            return 'http://' + app_name + ':5000/' + route;
+        } else {
+            return 'http://localhost:5000/' + route;
+        }
+    }
     const [formData, setFormData] = useState({
         username: '',
         password: '',
@@ -27,19 +34,44 @@ function Login() {
         e.preventDefault();
         var ext = ""
         if (logState == "Please Log In:") {
-            ext = "login";
+            doLogin(e); 
         } else {
             ext = "register";
         }
-
-        let url = "http://localhost:500/api/" + ext;
-
-        Axios.post(url, {
-            login: formData.username,
-            password: formData.password,
-            email: formData.email
-        })
     }
+
+    async function doLogin(event) {
+        event.preventDefault();
+
+        var obj = {login:formData.username, password:formData.password};
+        var js = JSON.stringify(obj); 
+
+        try {
+            const response = await fetch(buildPath('api/login'), 
+            {method: 'POST', body:js, headers:{'Content-Type': 'application/json'}});
+
+            var res = JSON.parse(await response.text());
+
+            if (res.id <= 0) {
+                console.log("user/pass combo wrong");
+            } else {
+                var user = {firstName:res.firstName, lastName:res.lastName, id:res.id}
+                localStorage.setItem('user_data', JSON.stringify(user));
+
+                window.location.href = '/homepage';
+            }
+        } catch(error) {
+            alert(error.toString());
+            return;
+        }
+    }
+
+    // async function doRegister(event) {
+    //     event.preventDefault();
+
+    //     var obj = {login:formData.username, password:formData.password, }
+    // }
+
 
     const handleLog = (e) => {
         if (logState == "Please Log In:"){
