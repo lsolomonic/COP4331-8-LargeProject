@@ -6,7 +6,7 @@ function Login() {
 
     function buildPath(route) {
         if (process.env.NODE_ENV != 'development') {
-            return 'http://' + app_name + ':5000/' + route;
+            return 'http://' + "group12cop4331.xyz" + ':5000/' + route;
         } else {
             return 'http://localhost:5000/' + route;
         }
@@ -14,8 +14,8 @@ function Login() {
     const [formData, setFormData] = useState({
         username: '',
         password: '',
-        email: '',
-        verifyemail: ''
+        firstName: '',
+        lastName: ''
     });
 
     const [logState, setLogState] = useState('Please Log In:')
@@ -47,8 +47,8 @@ function Login() {
         var js = JSON.stringify(obj); 
 
         try {
-            const response = await fetch(buildPath('api/login'), 
-            {method: 'POST', body:js, headers:{'Content-Type': 'application/json'}});
+            const response = await fetch(buildPath('api/login'),
+            {method:'POST',body:js,headers:{'Content-Type':'application/json'}});
 
             var res = JSON.parse(await response.text());
 
@@ -91,8 +91,8 @@ function Login() {
                 <input type="text" name="username" value={formData.username} onChange={handleChange} className="border-2 border-black rounded-2xl text-center mt-5" placeholder="Username" required></input> <br /> 
                 <input type="password" name="password" value={formData.password} onChange={handleChange} className="border-2 border-black rounded-2xl text-center mt-5" placeholder="Password" required></input> <br />
                 <div id="regDiv" className = {visState}>
-                    <input type="text" name="email" value={formData.email} onChange={handleChange} className="border-2 border-black rounded-2xl text-center mt-5" placeholder="Email"></input> <br />
-                    <input type="text" name="verifyemail" value={formData.verifyemail} onChange={handleChange}className="border-2 border-black rounded-2xl text-center mt-5" placeholder="Verify Email"></input>
+                    <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} className="border-2 border-black rounded-2xl text-center mt-5" placeholder="First Name"></input> <br />
+                    <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} className="border-2 border-black rounded-2xl text-center mt-5" placeholder="Last Name"></input>
                 </div> 
                 <button type="submit" className="border-black bg-sky-500 hover:bg-sky-700 border-2 rounded-3xl w-100 text-center mt-5">Continue</button>
                 </div>
