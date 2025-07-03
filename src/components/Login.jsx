@@ -36,7 +36,7 @@ function Login() {
         if (logState == "Please Log In:") {
             doLogin(e); 
         } else {
-            ext = "register";
+            doRegister(e);
         }
     }
 
@@ -66,11 +66,31 @@ function Login() {
         }
     }
 
-    // async function doRegister(event) {
-    //     event.preventDefault();
+    async function doRegister(event) {
+        event.preventDefault();
 
-    //     var obj = {login:formData.username, password:formData.password, }
-    // }
+        var obj = {login:formData.username, password:formData.password, firstName:formData.firstName, lastName:formData.lastName}
+        var js = JSON.stringify(obj);
+
+        try {
+            const response = await fetch(buildPath('api/register'),
+            {method:'POST',body:js,headers:{'Content-Type':'application/json'}}); 
+            
+            var res = JSON.part(await response.text());
+
+            if (res.id < 0) {
+                console.log("user already exists!");
+            } else {
+                var user = {firstName:res.firstName, lastName:res.lastName, id:res.id};
+                localStorage.setItem('user_data', JSON.stringify(user));
+
+                window.location.href='/'
+            }
+        } catch(error) {
+            alert(error.toString());
+            return;
+        }
+    }
 
 
     const handleLog = (e) => {
