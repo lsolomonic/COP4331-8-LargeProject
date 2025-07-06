@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import '../App.css'
 import { Axios } from 'axios'
+import { useNavigate } from 'react-router-dom';
+
 
 function Login() {
 
@@ -66,58 +68,44 @@ function Login() {
         }
     }
 
-    async function doRegister(event) {
-        event.preventDefault();
 
-        var obj = {login:formData.username, password:formData.password, firstName:formData.firstName, lastName:formData.lastName}
-        var js = JSON.stringify(obj);
+    // const handleLog = (e) => {
+    //     if (logState == "Please Log In:"){
+    //     setLogState('Please Register:');
+    //     setVisState('visible');
+    //     } else {
+    //     setLogState('Please Log In:');
+    //     setVisState('hidden');
+    //     }
+    // }
+    const navigate = useNavigate();
 
-        try {
-            const response = await fetch(buildPath('api/register'),
-            {method:'POST',body:js,headers:{'Content-Type':'application/json'}}); 
-            
-            var res = JSON.part(await response.text());
-
-            if (res.id < 0) {
-                console.log("user already exists!");
-            } else {
-                var user = {firstName:res.firstName, lastName:res.lastName, id:res.id};
-                localStorage.setItem('user_data', JSON.stringify(user));
-
-                window.location.href='/'
-            }
-        } catch(error) {
-            alert(error.toString());
-            return;
-        }
-    }
-
-
-    const handleLog = (e) => {
-        if (logState == "Please Log In:"){
-        setLogState('Please Register:');
-        setVisState('visible');
-        } else {
-        setLogState('Please Log In:');
-        setVisState('hidden');
-        }
-    }
+    const handleLog = () => {
+        navigate('/Registerpage');
+    };
 
     return (
         <>
             <div id="logState" className="text-[50px] text-center text-white">{logState}</div>
             <form onSubmit={handleSubmit}>
-                <div id="loginDiv" className="text-[40px] text-center bg-gray-400 rounded-xl text-white ">  
+                <div id="loginDiv" className="text-[40px] text-center bg-gray-400 rounded-xl text-white w-full max-w-lg mx-auto p-6">  
                 <input type="text" name="username" value={formData.username} onChange={handleChange} className="border-2 border-black rounded-2xl text-center mt-5" placeholder="Username" required></input> <br /> 
                 <input type="password" name="password" value={formData.password} onChange={handleChange} className="border-2 border-black rounded-2xl text-center mt-5" placeholder="Password" required></input> <br />
-                <div id="regDiv" className = {visState}>
-                    <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} className="border-2 border-black rounded-2xl text-center mt-5" placeholder="First Name"></input> <br />
-                    <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} className="border-2 border-black rounded-2xl text-center mt-5" placeholder="Last Name"></input>
-                </div> 
+                <div id="regDiv" className={visState}>
+                    <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} className="border-2 border-black rounded-2xl text-center mt-5" placeholder="First Name" />
+                    <br />
+                    <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} className="border-2 border-black rounded-2xl text-center mt-5" placeholder="Last Name" />
+                    <br />
+                    <input type="email" name="email" value={formData.email} onChange={handleChange} className="border-2 border-black rounded-2xl text-center mt-5" placeholder="Email" required />
+                    <br />
+                </div>
                 <button type="submit" className="border-black bg-sky-500 hover:bg-sky-700 border-2 rounded-3xl w-100 text-center mt-5">Continue</button>
                 </div>
             </form>
-            <div className="text-[40px] text-center text-white">No account yet? <a className="text-sky-500 hover:text-sky-700" onClick={handleLog}>Register here.</a></div>
+            <div className="text-[40px] text-center text-white">
+                No account yet? <a className="text-sky-500 hover:text-sky-700 cursor-pointer" onClick={handleLog}>Register here.</a>
+            </div>
+
         </>
     )
 }
