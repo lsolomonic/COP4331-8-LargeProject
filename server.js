@@ -138,9 +138,9 @@ app.post('/api/register', async (req, res) => {
 })
 
 app.post('/api/reviews', async (req, res) => {
-  const { user, building, rating, comment } = req.body;
+  const { user, building, vibes, comment } = req.body;
 
-  if (!user || !building || !rating) {
+  if (!user || !building || !vibes) {
     return res.status(400).json({ error: 'Missing required fields.' });
   }
 
@@ -151,7 +151,7 @@ app.post('/api/reviews', async (req, res) => {
     const newReview = {
       user,
       building,
-      rating,
+      vibes,
       comment: comment || '',
       createdAt: new Date()
     };
