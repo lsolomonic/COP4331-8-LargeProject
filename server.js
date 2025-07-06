@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config(); 
 const { MongoClient } = require('mongodb');
 const url = process.env.MONGO_URI;
 const client = new MongoClient(url);
@@ -30,7 +30,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.listen(5000, () => {
+app.listen(5000, '0.0.0.0', () => {
   console.log("Listening on port 5000...");
 });
 
@@ -134,5 +134,48 @@ app.post('/api/register', async (req, res) => {
   } catch (err) {
     console.error('Register error:', err);
     res.status(500).json({ error: 'Server error creating account.' });
+  }
+})
+
+app.post('/api/reviews', async (req, res) => {
+  const { user, building, rating, comment } = req.body;
+
+  if (!user || !building || !rating) {
+    return res.status(400).json({ error: 'Missing required fields.' });
+  }
+
+  try {
+    const db = client.db('COP4331Cards');
+    const reviews = db.collection('Reviews');
+
+    const newReview = {
+      user,
+      building,
+      rating,
+      comment: comment || '',
+      createdAt: new Date()
+    };
+
+    const result = await reviews.insertOne(newReview);
+
+    res.status(201).json({ id: result.insertedId, ...newReview });
+  } catch (err) {
+    console.error('Error creating review:', err);
+    res.status(500).json({ error: 'Failed to create review.' });
+  }
+});
+
+app.get('/api/reviews/building/:buildingId', async (req, res) => {
+  try {
+    const db = client.db('COP4331Cards');
+    const reviews = db.collection('Reviews');
+
+    const buildingId = req.params.buildingId;
+    const buildingReviews = await reviews.find({ building: buildingId }).toArray();
+
+    res.json(buildingReviews);
+  } catch (err) {
+    console.error('Error fetching reviews:', err);
+    res.status(500).json({ error: 'Failed to fetch reviews.' });
   }
 });
