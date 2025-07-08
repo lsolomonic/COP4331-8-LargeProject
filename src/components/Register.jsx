@@ -57,7 +57,7 @@ function Register() {
           id: res.id
         };
         localStorage.setItem('user_data', JSON.stringify(user));
-        window.location.href = '/Loginpage';
+        window.location.href = '/';
       }
     } catch (error) {
       alert(error.toString());
@@ -68,7 +68,7 @@ function Register() {
     <>
       <div className="text-[50px] text-center text-white">Please Register:</div>
       <form onSubmit={doRegister}>
-        <div className="text-[40px] text-center bg-gray-400 rounded-xl text-white w-full max-w-md mx-auto p-6">
+        <div className="text-[40px] text-center bg-gray-400 rounded-xl text-white w-full max-w-lg mx-auto p-6">
           <input
             type="text"
             name="username"

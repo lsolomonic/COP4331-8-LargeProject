@@ -60,7 +60,7 @@ function Login() {
                 var user = {firstName:res.firstName, lastName:res.lastName, id:res.id}
                 localStorage.setItem('user_data', JSON.stringify(user));
 
-                window.location.href = '/homepage';
+                window.location.href = '/Homepage';
             }
         } catch(error) {
             alert(error.toString());
@@ -99,13 +99,14 @@ function Login() {
                     <input type="email" name="email" value={formData.email} onChange={handleChange} className="border-2 border-black rounded-2xl text-center mt-5" placeholder="Email" required />
                     <br />
                 </div>
-                <button type="submit" className="border-black bg-sky-500 hover:bg-sky-700 border-2 rounded-3xl w-100 text-center mt-5">Continue</button>
+                <button 
+                    onClick={handleSubmit}
+                    type="submit" className="border-black bg-sky-500 hover:bg-sky-700 border-2 rounded-3xl w-100 text-center mt-5">Continue</button>
                 </div>
             </form>
             <div className="text-[40px] text-center text-white">
                 No account yet? <a className="text-sky-500 hover:text-sky-700 cursor-pointer" onClick={handleLog}>Register here.</a>
             </div>
-
         </>
     )
 }
