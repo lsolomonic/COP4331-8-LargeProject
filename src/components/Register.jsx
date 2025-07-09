@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import '../App.css';
+import { useNavigate } from 'react-router-dom';
 
 function Register() {
   function buildPath(route) {
@@ -46,23 +47,32 @@ function Register() {
         headers: { 'Content-Type': 'application/json' }
       });
 
-      const res = JSON.parse(await response.text());
+      const res = await response.json();
 
-      if (res.id < 0) {
-        console.log("User already exists!");
-      } else {
-        const user = {
-          firstName: res.firstName,
-          lastName: res.lastName,
-          id: res.id
-        };
-        localStorage.setItem('user_data', JSON.stringify(user));
-        window.location.href = '/';
+      if (!response.ok) {
+        // Handle errors like username taken
+        alert(res.error || "Registration failed.");
+        return;
       }
+
+      const user = {
+        firstName: res.firstName,
+        lastName: res.lastName,
+        id: res.id
+      };
+      localStorage.setItem('user_data', JSON.stringify(user));
+      window.location.href = '/';
+
     } catch (error) {
-      alert(error.toString());
+      alert("Network or server error: " + error.toString());
     }
   }
+
+  const navigate = useNavigate();
+
+  const handleLog = () => {
+    navigate('/');
+  };
 
   return (
     <>
@@ -122,6 +132,9 @@ function Register() {
           </button>
         </div>
       </form>
+      <div className="text-[40px] text-center text-white">
+        Have an account? <a className="text-sky-500 hover:text-sky-700 cursor-pointer" onClick={handleLog}>Login Here.</a>
+      </div>
     </>
   );
 }

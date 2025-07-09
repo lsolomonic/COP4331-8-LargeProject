@@ -20,6 +20,10 @@ let cardList = [
 ];
 const app = express();
 
+const crypto = require('crypto');
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -43,6 +47,10 @@ app.post('/api/login', async (req, res) => {
     const user = await db.collection('Users').findOne({ Login: login });
 
     if (user && await bcrypt.compare(password, user.Password)) {
+      if (!user.Verified) {
+        return res.status(403).json({ error: 'Please verify your email first.' });
+      }
+
       id = user.UserID;
       fn = user.FirstName;
       ln = user.LastName;
@@ -53,8 +61,10 @@ app.post('/api/login', async (req, res) => {
     console.error('Login error:', err);
     error = 'Server error during login.';
   }
+
   res.status(200).json({ id, firstName: fn, lastName: ln, error });
 });
+
 
 app.post('/api/addcard', async (req, res) => {
   const { userId, card } = req.body;
@@ -94,36 +104,52 @@ app.post('/api/searchcards', async (req, res) => {
 });
 
 app.post('/api/register', async (req, res) => {
-  const { firstName, lastName, login, password } = req.body;
+  const { firstName, lastName, login, password, email } = req.body;
 
-
-  if (!firstName || !lastName || !login || !password)
+  if (!firstName || !lastName || !login || !password || !email)
     return res.status(400).json({ error: 'All fields are required.' });
 
   try {
     const db     = client.db('COP4331Cards');
     const users  = db.collection('Users');
 
-
     const existing = await users.findOne({ Login: login });
     if (existing)
-      return res.status(409).json({ error: 'Username already exists.' });
+      return res.status(409).json({ error: 'Username already exists, Please Login' });
 
-   
     const max = await users.find().sort({ UserID: -1 }).limit(1).toArray();
     const nextId = max.length ? max[0].UserID + 1 : 1;
 
-
     const hash = await bcrypt.hash(password, saltRounds);
+
+    const token = crypto.randomBytes(32).toString('hex');
 
     const newUser = {
       UserID: nextId,
       Login: login,
       Password: hash,
       FirstName: firstName,
-      LastName:  lastName
+      LastName:  lastName,
+      Email: email,
+      Verified: false,
+      VerificationToken: token
     };
     await users.insertOne(newUser);
+
+    const verificationUrl = `${process.env.CLIENT_URL}/verify/${token}`;
+    const msg = {
+      to: email,
+      from: process.env.SENDGRID_FROM,
+      subject: 'Verify your email address',
+      html: `
+        <h2>Welcome to our app, ${firstName}!</h2>
+        <p>Please verify your email by clicking the link below:</p>
+        <a href="${verificationUrl}">Verify Email</a>
+        <p>If you did not sign up, you can ignore this email.</p>
+      `
+    };
+
+    await sgMail.send(msg);
 
     res.status(201).json({
       id: nextId,
@@ -177,5 +203,30 @@ app.get('/api/reviews/building/:buildingId', async (req, res) => {
   } catch (err) {
     console.error('Error fetching reviews:', err);
     res.status(500).json({ error: 'Failed to fetch reviews.' });
+  }
+});
+
+app.get('/api/verify/:token', async (req, res) => {
+  const token = req.params.token;
+
+  try {
+    const db = client.db('COP4331Cards');
+    const users = db.collection('Users');
+
+    const user = await users.findOne({ VerificationToken: token });
+
+    if (!user) {
+      return res.status(400).json({ error: 'Invalid or expired verification token.' });
+    }
+
+    await users.updateOne(
+      { VerificationToken: token },
+      { $set: { Verified: true }, $unset: { VerificationToken: "" } }
+    );
+
+    res.status(200).json({ message: 'Email successfully verified.' });
+  } catch (err) {
+    console.error('Verification error:', err);
+    res.status(500).json({ error: 'Server error verifying email.' });
   }
 });

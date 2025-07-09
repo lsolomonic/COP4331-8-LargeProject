@@ -4,6 +4,7 @@ import Homepage from './pages/Homepage';
 import AboutUs from './pages/AboutUs';
 import Register from './components/Register';
 import RegisterPage from './pages/Registerpage';
+import Verify from './pages/Verify';
 
 import { BrowserRouter, Route, Routes } from 'react-router';
 
@@ -16,6 +17,7 @@ function App() {
           <Route path="/aboutus" element={<AboutUs />} />
           <Route path="/register" element={<Register />} />
           <Route path="/registerpage" element={<RegisterPage />} />
+          <Route path="/verify/:token" element={<Verify />} />
         </Routes>
       </BrowserRouter>
   );

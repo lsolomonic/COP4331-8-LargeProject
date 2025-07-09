@@ -45,28 +45,38 @@ function Login() {
     async function doLogin(event) {
         event.preventDefault();
 
-        var obj = {login:formData.username, password:formData.password};
-        var js = JSON.stringify(obj); 
+        const obj = { login: formData.username, password: formData.password };
+        const js = JSON.stringify(obj);
 
         try {
-            const response = await fetch(buildPath('api/login'),
-            {method:'POST',body:js,headers:{'Content-Type':'application/json'}});
+            const response = await fetch(buildPath('api/login'), {
+            method: 'POST',
+            body: js,
+            headers: { 'Content-Type': 'application/json' }
+            });
 
-            var res = JSON.parse(await response.text());
+            const res = await response.json();
 
-            if (res.id <= 0) {
-                console.log("user/pass combo wrong");
-            } else {
-                var user = {firstName:res.firstName, lastName:res.lastName, id:res.id}
-                localStorage.setItem('user_data', JSON.stringify(user));
-
-                window.location.href = '/Homepage';
-            }
-        } catch(error) {
-            alert(error.toString());
+            if (!response.ok) {
+            // Handles errors like unverified email or wrong login
+            alert(res.error || 'Login failed.');
             return;
+            }
+
+            // Successful login
+            const user = {
+            firstName: res.firstName,
+            lastName: res.lastName,
+            id: res.id
+            };
+            localStorage.setItem('user_data', JSON.stringify(user));
+            window.location.href = '/Homepage';
+
+        } catch (error) {
+            alert("Network or server error: " + error.toString());
         }
     }
+
 
 
     // const handleLog = (e) => {
