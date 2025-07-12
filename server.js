@@ -229,4 +229,60 @@ app.get('/api/verify/:token', async (req, res) => {
     console.error('Verification error:', err);
     res.status(500).json({ error: 'Server error verifying email.' });
   }
+})
+
+app.get('/api/places/:userId', async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const db = client.db('COP4331Cards');
+    const users = db.collection('Users');
+    const buildings = db.collection('Buildings');
+
+    // Step 1: Find user
+    const user = await users.findOne({ _id: new ObjectId(userId) });
+
+    if (!user || !Array.isArray(user.myPlaces)) {
+      return res.status(404).json({ error: 'User not found or no saved places.' });
+    }
+
+    // Step 2: Get buildings matching user.myPlaces (string _id)
+    const favorites = await buildings.find({
+      _id: { $in: user.myPlaces }
+    }).toArray();
+
+    res.json(favorites);
+  } catch (err) {
+    console.error('Error fetching favorite places:', err);
+    res.status(500).json({ error: 'Server error fetching favorite places.' });
+  }
+})
+
+app.post('/api/places/add', async (req, res) => {
+  const { username, buildingId } = req.body;
+
+  if (!username || !buildingId) {
+    return res.status(400).json({ error: 'Username and buildingId are required.' });
+  }
+
+  try {
+    const db = client.db('COP4331Cards');
+    const users = db.collection('Users');
+
+    // Update the user's myPlaces array only if it doesn't already include the building
+    const updateResult = await users.updateOne(
+      { Login: username },
+      { $addToSet: { myPlaces: buildingId } }
+    );
+
+    if (updateResult.matchedCount === 0) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+
+    res.status(200).json({ message: 'Building added to favorites successfully.' });
+
+  } catch (err) {
+    console.error('Error adding to favorites:', err);
+    res.status(500).json({ error: 'Server error adding favorite place.' });
+  }
 });
