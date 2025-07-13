@@ -260,19 +260,31 @@ app.get('/api/places/:userId', async (req, res) => {
 })
 
 app.post('/api/places/add', async (req, res) => {
-  const { username, buildingId } = req.body;
-
-  if (!username || !buildingId) {
-    return res.status(400).json({ error: 'Username and buildingId are required.' });
+  const { userId, building, vibe, location } = req.body;
+  const userObjectId = new ObjectId(userId);
+  
+  if (!userObjectId || !building || !vibe) {
+    return res.status(400).json({ error: 'UserId, building, and vibe are required.' });
   }
 
   try {
     const db = client.db('COP4331Cards');
     const users = db.collection('Users');
+    const buildings = db.collection('Buildings');
+
+    const buildingId = Math.floor(Math.random() * 9000) + 1000;
+
+    // Insert new building
+    await buildings.insertOne({
+      _id: buildingId.toString(),
+      building,
+      vibe,
+      location
+    });
 
     // Update the user's myPlaces array only if it doesn't already include the building
     const updateResult = await users.updateOne(
-      { Login: username },
+      { _id: userObjectId },
       { $addToSet: { myPlaces: buildingId } }
     );
 
