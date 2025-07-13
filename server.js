@@ -301,4 +301,26 @@ app.get('/api/buildings/filter/:vibeType', async (req, res) => {
       console.error('Error fetching buildings by vibe:', err);
       res.status(500).json({ error: 'Server error fetching buildings by vibe.' });
     }
-  });
+  })
+  
+  app.get('/api/buildings/search', async (req, res) => {
+  const { query } = req.query;
+
+  if (!query || query.trim() === '') {
+    return res.status(400).json({ error: 'Query parameter is required.' });
+  }
+
+  try {
+    const db = client.db('COP4331Cards');
+    const buildings = db.collection('Buildings');
+
+    const results = await buildings.find({
+      building: { $regex: query, $options: 'i' } // case-insensitive substring match
+    }).toArray();
+
+    res.status(200).json(results);
+  } catch (err) {
+    console.error('Error searching buildings:', err);
+    res.status(500).json({ error: 'Server error searching buildings.' });
+  }
+});
