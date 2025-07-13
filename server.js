@@ -285,4 +285,20 @@ app.post('/api/places/add', async (req, res) => {
     console.error('Error adding to favorites:', err);
     res.status(500).json({ error: 'Server error adding favorite place.' });
   }
-});
+})
+  
+app.get('/api/buildings/filter/:vibeType', async (req, res) => {
+    const { vibeType } = req.params;
+
+    try {
+      const db = client.db('COP4331Cards');
+      const buildings = db.collection('Buildings');
+
+      const matchedBuildings = await buildings.find({ vibe: new RegExp(`^${vibeType}$`, 'i') }).toArray();
+
+      res.status(200).json(matchedBuildings);
+    } catch (err) {
+      console.error('Error fetching buildings by vibe:', err);
+      res.status(500).json({ error: 'Server error fetching buildings by vibe.' });
+    }
+  });
