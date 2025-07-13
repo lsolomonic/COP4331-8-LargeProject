@@ -5,6 +5,7 @@ import AboutUs from './pages/AboutUs';
 import Register from './components/Register';
 import RegisterPage from './pages/Registerpage';
 import Verify from './pages/Verify';
+import MyPlaces from './pages/MyPlaces';
 
 import { BrowserRouter, Route, Routes } from 'react-router';
 
@@ -18,6 +19,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/registerpage" element={<RegisterPage />} />
           <Route path="/verify/:token" element={<Verify />} />
+          <Route path="myplaces" element={<MyPlaces />} />
         </Routes>
       </BrowserRouter>
   );

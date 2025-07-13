@@ -69,7 +69,9 @@ function Login() {
             lastName: res.lastName,
             id: res.id
             };
+            
             localStorage.setItem('user_data', JSON.stringify(user));
+            localStorage.setItem('userID', res.id);
             window.location.href = '/Homepage';
 
         } catch (error) {
@@ -77,17 +79,6 @@ function Login() {
         }
     }
 
-
-
-    // const handleLog = (e) => {
-    //     if (logState == "Please Log In:"){
-    //     setLogState('Please Register:');
-    //     setVisState('visible');
-    //     } else {
-    //     setLogState('Please Log In:');
-    //     setVisState('hidden');
-    //     }
-    // }
     const navigate = useNavigate();
 
     const handleLog = () => {

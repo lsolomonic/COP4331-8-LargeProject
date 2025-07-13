@@ -12,6 +12,15 @@ function Locations() {
         //api call 
     }
 
+
+    function buildPath(route) {
+        if (process.env.NODE_ENV != 'development') {
+            return 'http://' + "group12cop4331.xyz" + ':5000/' + route;
+        } else {
+            return 'http://localhost:5000/' + route;
+        }
+    }
+
     function filterPressed(selection) {
         if (selection == "Study") {
             // filter for study
@@ -22,21 +31,43 @@ function Locations() {
         } else {
             // cancel filters
         }
-    }
+    }    
+
+    var placeData = []
 
     useEffect(() => {
         const fetchData = async () => {
-            const mockData = [
-                { location: 'Library', utility: 'Study' },
-                { location: 'Tech Commons', utility: 'Study' },
-                { location: 'Lineage Coffee Roasters', utility: 'Study' },
-                { location: 'Burnett Honors College', utility: 'Study' },
-                { location: 'Student Union', utility: 'Social' },
-                { location: 'Haan Coffee', utility: 'Social' },
-                { location: 'Foxtail (on-campus)', utility: 'Versatile' }
-            ];
+            const userID = localStorage.getItem("userID")
+            const obj = {userId: userID};
+            const js = JSON.stringify(obj);
 
-            setLocData(mockData);
+            try {
+                const response = await fetch(buildPath('api/places/' + userID), {
+                    method: 'get',
+                    body: js,
+                    headers: { 'Content-Type:': 'application/json' }
+                });
+
+                const res = await response.json();
+
+                if (!response.ok) {
+                    alert(res.error || 'Login failed.');
+                    return;
+                }
+
+                
+                //TO DO, formatting response as array of places
+                placeData = res.map(item => ({
+                    building: item.building,
+                    vibe: item.vibe,
+                    location: item.location
+                }));
+
+            } catch (error) {
+                alert("Network or server error: " + error);
+            }
+
+            setLocData(placeData);
         };
 
         fetchData();
@@ -78,7 +109,7 @@ function Locations() {
                 </Menu>
             </div>
             <div className="max-w-7xl mx-auto mt-10 pg-4 bg-white shadow rounded text-center">
-                <div className="overflow-y-scroll max-h-64 border rounded">
+                <div className="overflow-y-scroll max-h-100 border rounded">
                     <table className="min-w-full text-left text-sm">
                         <thead className="bg-gray-400 text-white sticky top-0 text-2xl rounded-xl">
                             <tr>
@@ -87,10 +118,10 @@ function Locations() {
                             </tr>
                         </thead>
                         <tbody>
-                            {locData.map((item, idx) => (
+                            {placeData.map((item, idx) => (
                             <tr key={idx} className="odd:bg-gray-500 even:bg-gray-600 text-xl text-white rounded-xl">
                                 <td className="px-4 py-2">{item.location}</td>
-                                <td className="px-4 py-2">{item.utility}</td>
+                                <td className="px-4 py-2">{item.vibe}</td>
                             </tr>
                             ))}
                         </tbody>

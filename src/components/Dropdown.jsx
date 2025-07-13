@@ -29,7 +29,9 @@ function Dropdown() {
                         </button>
                     </MenuItem>
                     <MenuItem>
-                        <button className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10">
+                        <button className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10" onClick={() => {
+                            window.location.href='myplaces'
+                        }}>
                         My Places
                         </button>
                     </MenuItem>
