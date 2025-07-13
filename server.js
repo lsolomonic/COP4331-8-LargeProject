@@ -131,6 +131,7 @@ app.post('/api/register', async (req, res) => {
       FirstName: firstName,
       LastName:  lastName,
       Email: email,
+      myPlaces: [],
       Verified: false,
       VerificationToken: token
     };
