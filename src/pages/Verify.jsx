@@ -9,17 +9,21 @@ function Verify() {
   useEffect(() => {
     async function verifyEmail() {
       try {
-        const response = await fetch(`http://localhost:5000/api/verify/${token}`);
-        const res = await response.json();
+        const response = await fetch(
+          process.env.NODE_ENV === 'development'
+            ? `http://localhost:5000/api/verify/${token}`
+            : `/api/verify/${token}`
+        );
+
 
         if (response.ok) {
           setStatus('Email verified! Redirecting to login...');
-          setTimeout(() => navigate('/'), 3000); 
+          setTimeout(() => navigate('/'), 1000); 
         } else {
           setStatus(`${res.error || 'Please wait to be redirected'}`);
         }
       } catch (err) {
-        setStatus('Verification failed. Please try again later.');
+        setStatus('Please wait to be redirected.');
       }
     }
 

@@ -4,11 +4,9 @@ import { useNavigate } from 'react-router-dom';
 
 function Register() {
   function buildPath(route) {
-    if (process.env.NODE_ENV !== 'development') {
-      return 'http://' + "group12cop4331.xyz" + ':5000/' + route;
-    } else {
-      return 'http://localhost:5000/' + route;
-    }
+    return process.env.NODE_ENV === 'development'
+      ? 'http://localhost:5000/api/' + route
+      : '/api/' + route;
   }
 
   const [formData, setFormData] = useState({
@@ -41,13 +39,13 @@ function Register() {
     const js = JSON.stringify(obj);
 
     try {
-      const response = await fetch(buildPath('api/register'), {
+      const response = await fetch(buildPath('register'), {
         method: 'POST',
         body: js,
         headers: { 'Content-Type': 'application/json' }
       });
 
-      const res = await response.json();
+    const res = await response.json();
 
       if (!response.ok) {
         // Handle errors like username taken
