@@ -138,7 +138,10 @@ app.post('/api/register', async (req, res) => {
     };
     await users.insertOne(newUser);
 
-    const verificationUrl = `${process.env.CLIENT_URL}/verify/${token}`;
+    const origin = req.get('origin');
+    const isDev = origin && origin.includes('localhost');
+    const verificationUrl = `${isDev ? 'http://localhost:5173' : process.env.CLIENT_URL}/verify/${token}`;
+
     const msg = {
       to: email,
       from: process.env.SENDGRID_FROM,
@@ -210,7 +213,6 @@ app.get('/api/reviews/building/:buildingId', async (req, res) => {
 
 app.get('/api/verify/:token', async (req, res) => {
   const token = req.params.token;
-
   try {
     const db = client.db('COP4331Cards');
     const users = db.collection('Users');
