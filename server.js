@@ -52,7 +52,7 @@ app.post('/api/login', async (req, res) => {
         return res.status(403).json({ error: 'Please verify your email first.' });
       }
 
-      id = user.UserID;
+      id = user._id.toString();
       fn = user.FirstName;
       ln = user.LastName;
     } else {
