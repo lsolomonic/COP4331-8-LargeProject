@@ -8,12 +8,12 @@ Using the Google Maps React API, VibeCheck allows users to browse any location t
 
 ### Team
 
-Bill Noel (API)
-Joel Knopp (API)
-Ethan Baedorf (Database & Mobile Development)
-Zachary Kertesz (Project Manager & Mobile Development)
-Lexi Solomonic (Front-End)
-Dev Patel (Front-End)
+Bill Noel (API) 
+Joel Knopp (API) 
+Ethan Baedorf (Database & Mobile Development) 
+Zachary Kertesz (Project Manager & Mobile Development) 
+Lexi Solomonic (Front-End) 
+Dev Patel (Front-End) 
 
 ### Visit our project at http://group12cop4331.xyz/ 
 
