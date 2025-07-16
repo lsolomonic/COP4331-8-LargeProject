@@ -1,15 +1,32 @@
 import { useState } from 'react';
+import Dropdown from '../components/Dropdown';
+import { MenuItem } from '@headlessui/react';
 
 function AboutUs() {
   return (
-    <div className="min-h-screen bg-[#2f3640] text-white p-8">
+    <div className="min-h-screen bg-[#2f3640] text-white p-8 relative">
+      <div className="absolute right-8 top-4">
+        <Dropdown>
+          <MenuItem>
+            <button
+              className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10"
+              onClick={() => {
+                window.location.href = '/';
+              }}
+            >
+              Back to Homepage
+            </button>
+          </MenuItem>
+        </Dropdown>
+      </div>
+
       <div className="max-w-5xl mx-auto text-center">
         <h1 className="text-4xl font-extrabold mb-4 text-white-400">About Us</h1>
         <p className="text-lg text-gray-300 mb-8">
-            What is it?
-            Our app is a location-based vibe-sharing platform built for our COP4331 
-            Large Project at the University of Central Florida. 
-            Users can click on a map, assign a vibe or activity label to that spot.
+          <strong>What is it?</strong> <br />
+          Our app is a location-based vibe-sharing platform built for our COP4331 
+          Large Project at the University of Central Florida. 
+          Users can click on a map, assign a vibe or activity label to that spot.
         </p>
 
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10">
