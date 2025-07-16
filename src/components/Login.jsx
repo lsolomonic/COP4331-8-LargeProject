@@ -72,6 +72,7 @@ function Login() {
             
             localStorage.setItem('user_data', JSON.stringify(user));
             localStorage.setItem('userID', res.id);
+            localStorage.setItem('name', user.firstName);
             window.location.href = '/Homepage';
 
         } catch (error) {

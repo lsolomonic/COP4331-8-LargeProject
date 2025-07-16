@@ -22,56 +22,10 @@ function Locations() {
     }
 
     function filterPressed(selection) {
-        if (selection == "Study") {
-            // filter for study
-        } else if (selection == "Social") {
-            // filter for social
-        } else if (selection == "Social") {
-            // filter for versatile
-        } else {
-            // cancel filters
-        }
+        return;
     }    
 
     var placeData = []
-
-    useEffect(() => {
-        const fetchData = async () => {
-            const userID = localStorage.getItem("userID")
-            const obj = {userId: userID};
-            const js = JSON.stringify(obj);
-
-            try {
-                const response = await fetch(buildPath('api/places/' + userID), {
-                    method: 'get',
-                    body: js,
-                    headers: { 'Content-Type:': 'application/json' }
-                });
-
-                const res = await response.json();
-
-                if (!response.ok) {
-                    alert(res.error || 'Login failed.');
-                    return;
-                }
-
-                
-                //TO DO, formatting response as array of places
-                placeData = res.map(item => ({
-                    building: item.building,
-                    vibe: item.vibe,
-                    location: item.location
-                }));
-
-            } catch (error) {
-                alert("Network or server error: " + error);
-            }
-
-            setLocData(placeData);
-        };
-
-        fetchData();
-    }, []);
 
     return (
         <>
@@ -114,6 +68,7 @@ function Locations() {
                         <thead className="bg-gray-400 text-white sticky top-0 text-2xl rounded-xl">
                             <tr>
                                 <th className="px-4 py-2 font-semibold">Location</th>
+                                <th className="px-4 py-2 font-semibold">Name</th>
                                 <th className="px-4 py-2 font-semibold">Vibe</th>
                             </tr>
                         </thead>

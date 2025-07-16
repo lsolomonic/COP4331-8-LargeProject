@@ -4,7 +4,7 @@ import MapComponent from '../components/Map'
 import { PlusIcon } from "@heroicons/react/16/solid";
 
 function Homepage() {
-    const [name, setName] = useState("testname");
+    const [name, setName] = useState(localStorage.getItem("name"));
     const [popupVisible, setPopupVisible] = useState('hidden');
 
     
