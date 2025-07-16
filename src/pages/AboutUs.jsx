@@ -11,10 +11,10 @@ function AboutUs() {
             <button
               className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10"
               onClick={() => {
-                window.location.href = '/';
+                window.location.href = '/Homepage';
               }}
             >
-              Back to Homepage
+              Homepage
             </button>
           </MenuItem>
         </Dropdown>
