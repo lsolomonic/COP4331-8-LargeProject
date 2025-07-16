@@ -2,9 +2,8 @@ import { useState, useEffect } from 'react';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { AdjustmentsHorizontalIcon } from '@heroicons/react/16/solid';
 
-function Locations() {
+function Locations({ userID }) {
     const [locData, setLocData] = useState([]);
-
     const [searchData, setSearchData] = useState("");
 
     const handleChange = (e) => {
@@ -25,7 +24,28 @@ function Locations() {
         return;
     }    
 
-    var placeData = []
+
+    useEffect(() => {
+        const fetchPlaces = async () => {
+
+            try {
+                const response = await fetch(buildPath('api/places/' + userID));
+                if (!response.ok) {
+                    alert(response.error || 'Failed to load your places.');
+                    return;
+                }
+
+                const data = await response.json(); 
+                setLocData(data); 
+            } catch (error) {
+                alert("Error loading places: " + error);
+            }
+        };
+
+        if (userID) {
+            fetchPlaces(); 
+        }
+    }, [userID]);
 
     return (
         <>
@@ -73,9 +93,10 @@ function Locations() {
                             </tr>
                         </thead>
                         <tbody>
-                            {placeData.map((item, idx) => (
+                            {locData.map((item, idx) => (
                             <tr key={idx} className="odd:bg-gray-500 even:bg-gray-600 text-xl text-white rounded-xl">
                                 <td className="px-4 py-2">{item.location}</td>
+                                <td className="px-4 py-2">{item.building}</td>
                                 <td className="px-4 py-2">{item.vibe}</td>
                             </tr>
                             ))}

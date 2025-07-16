@@ -13,7 +13,7 @@ function MyPlaces() {
                     <Dropdown />
                 </div>
             </div>
-            <Locations />
+            <Locations userID={localStorage.getItem("userID")} />
         </>
     )
 }

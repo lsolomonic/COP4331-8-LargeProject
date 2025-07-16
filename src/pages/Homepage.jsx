@@ -32,37 +32,12 @@ function Homepage() {
         setClickedLocation(location);
         console.log("Clicked location: " + location);
     }
-    
-    // async function handleSubmit(e) {
-    //     e.preventDefault();
-    //     const obj = {location: clickedLocation, vibe: vibe, building: locName, username: localStorage.getItem("userID")};
-    //     const js = JSON.stringify(obj); 
-    //     try {
-    //         const response = await fetch(buildPath('/api/places/add'), {
-    //             method: 'POST',
-    //             body: js,
-    //             headers: { 'Content-Type': 'application/json' }
-    //         })
-
-    //         const res = await response.json(); 
-
-    //         if (!response.ok) {
-    //             alert(response.error || "Login failed.");
-    //             return;
-    //         }
-
-    //         //add pin here (TODO)
-    //     } catch (error) {
-    //         alert("Network or server error: " + error.toString());
-    //     }
-    // }
 
     async function handleSubmit(e) {
         e.preventDefault();
-        const obj = {location: clickedLocation, vibe: vibe, building: locName, userId:localStorage.getItem("userID")};
-        const js = JSON.stringify(obj); 
-        alert("json package sending: " + js);
         
+        const obj = {location: clickedLocation, vibe: vibe, building: locName, userId:localStorage.getItem("userID")};
+        const js = JSON.stringify(obj);         
         try {
             const response = await fetch(buildPath('api/places/add'), {
                 method: 'POST',

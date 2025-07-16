@@ -243,16 +243,17 @@ app.get('/api/places/:userId', async (req, res) => {
     const users = db.collection('Users');
     const buildings = db.collection('Buildings');
 
-    // Step 1: Find user
     const user = await users.findOne({ _id: new ObjectId(userId) });
 
     if (!user || !Array.isArray(user.myPlaces)) {
       return res.status(404).json({ error: 'User not found or no saved places.' });
     }
 
-    // Step 2: Get buildings matching user.myPlaces (string _id)
+    // Convert numbers to strings to match Buildings._id type
+    const placeIds = user.myPlaces.map(id => id.toString());
+
     const favorites = await buildings.find({
-      _id: { $in: user.myPlaces }
+      _id: { $in: placeIds }
     }).toArray();
 
     res.json(favorites);
@@ -260,7 +261,8 @@ app.get('/api/places/:userId', async (req, res) => {
     console.error('Error fetching favorite places:', err);
     res.status(500).json({ error: 'Server error fetching favorite places.' });
   }
-})
+});
+
 
 app.post('/api/places/add', async (req, res) => {
   const { userId, building, vibe, location } = req.body;
