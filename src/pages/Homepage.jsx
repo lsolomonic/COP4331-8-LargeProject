@@ -4,10 +4,11 @@ import MapComponent from '../components/Map'
 import { PlusIcon } from "@heroicons/react/16/solid";
 import Header from '../components/Header';
 
-
 function Homepage() {
     const [name, setName] = useState(localStorage.getItem("name"));
     const [popupVisible, setPopupVisible] = useState('hidden');
+    const [successMsg, setSuccessMsg] = useState("");
+    const [addedCoords, setAddedCoords] = useState([]);
 
     
     const [clickedLocation, setClickedLocation] = useState(null);
@@ -54,6 +55,14 @@ function Homepage() {
                 return;
             }
 
+            setSuccessMsg("Place Added!");
+            setAddedCoords(prev => [...prev, clickedLocation]);
+            setClickedLocation(null);
+            setLocName("");
+            setVibe("");
+            setPopupVisible('hidden');
+            setTimeout(() => setSuccessMsg(""), 2000);
+
             //add pin here (TODO)
         } catch (error) {
             alert("Network or server error: " + error.toString());
@@ -75,6 +84,9 @@ function Homepage() {
             <div className="relative w-full h-24 flex items-center justify-center gap-4">
                 <h1 className="text-white text-[50px]">Options:</h1>
                 <PlusIcon className="fill-white h-20 w-20" onClick={togglePopup}/>
+                {successMsg && (
+                <div className="absolute top-full mt-2 text-white text-lg font-semibold">{successMsg}</div>
+                )}
                 <div className={popupVisible}>
                         <div id="popupDiv" className="relative w-full h-30 flex items-center justify-center gap-4 bg-gray-300 rounded-2xl p-5">
                             <form onSubmit={handleSubmit}>
@@ -85,9 +97,8 @@ function Homepage() {
                             </form>
                         </div>
                 </div>
+
             </div>
-
-
         </>
     )
 }
