@@ -2,11 +2,13 @@ import {useState} from 'react';
 import Dropdown from '../components/Dropdown';
 import Locations from '../components/Locations';
 import { MenuItem } from '@headlessui/react';
+import Header from '../components/Header'
 
 function MyPlaces() {
   return (
     <>
       <div className="relative w-full h-24">
+        <Header />
         <h1 className="absolute inset-0 flex justify-center items-center text-white text-[50px]">
           My Places
         </h1>

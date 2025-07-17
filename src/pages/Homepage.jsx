@@ -2,6 +2,8 @@ import {useState} from "react"
 import Dropdown from '../components/Dropdown'
 import MapComponent from '../components/Map'
 import { PlusIcon } from "@heroicons/react/16/solid";
+import Header from '../components/Header';
+
 
 function Homepage() {
     const [name, setName] = useState(localStorage.getItem("name"));
@@ -61,6 +63,7 @@ function Homepage() {
     return (
         <>
             <div className="relative w-full h-24">
+                <Header />  
                 <h1 className="absolute inset-0 flex justify-center items-center text-white text-[50px]">
                     Welcome, {name}!
                 </h1>

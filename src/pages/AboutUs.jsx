@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import Dropdown from '../components/Dropdown';
 import { MenuItem } from '@headlessui/react';
+import Header from '../components/Header'
 
 function AboutUs() {
   return (
     <div className="min-h-screen bg-[#2f3640] text-white p-8 relative">
+      <Header />
       <div className="absolute right-8 top-4">
         <Dropdown>
           <MenuItem>
