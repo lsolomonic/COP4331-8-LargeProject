@@ -47,7 +47,7 @@ app.post('/api/login', async (req, res) => {
     const db = client.db('COP4331Cards');
     const user = await db.collection('Users').findOne({ Login: login });
 
-    if (!user) {
+    if (!user || !await bcrypt.compare(password, user.Password)) {
       return res.status(403).json({error: "Account doesn't exist!"});
     }
 
