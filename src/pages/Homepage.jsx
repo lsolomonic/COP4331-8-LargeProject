@@ -10,7 +10,7 @@ function Homepage() {
     const [successMsg, setSuccessMsg] = useState("");
     const [addedCoords, setAddedCoords] = useState([]);
 
-    
+    const [notif, setNotif] = useState("");
     const [clickedLocation, setClickedLocation] = useState(null);
     const [locName, setLocName] = useState('');
     const [vibe, setVibe] = useState('');
@@ -51,7 +51,10 @@ function Homepage() {
             const res = await response.json(); 
 
             if (!response.ok) {
-                alert(response.error || "Login failed.");
+                setNotif(response.error || "Add failed.");
+                setTimeout(function(){
+                    setNotif("");
+                }, 3000);
                 return;
             }
 
@@ -63,6 +66,10 @@ function Homepage() {
             setPopupVisible('hidden');
             setTimeout(() => setSuccessMsg(""), 2000);
 
+            setNotif("Place successfully added!");
+            setTimeout(function(){
+                setNotif("");
+            }, 3000);
             //add pin here (TODO)
         } catch (error) {
             alert("Network or server error: " + error.toString());
@@ -97,7 +104,6 @@ function Homepage() {
                             </form>
                         </div>
                 </div>
-
             </div>
         </>
     )

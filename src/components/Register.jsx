@@ -17,6 +17,8 @@ function Register() {
     email: ''
   });
 
+  const [notif, setNotif] = useState("");
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
@@ -49,7 +51,10 @@ function Register() {
 
       if (!response.ok) {
         // Handle errors like username taken
-        alert(res.error || "Registration failed.");
+        setNotif(res.error || "Registration failed.");
+        setTimeout(function(){
+            setNotif("");
+        }, 3000)
         return;
       }
 
@@ -62,7 +67,10 @@ function Register() {
       window.location.href = '/';
 
     } catch (error) {
-      alert("Network or server error: " + error.toString());
+      setNotif("Network or server error: " + error.toString());
+      setTimeout(function(){
+          setNotif("");
+      }, 3000)
     }
   }
 
@@ -133,6 +141,7 @@ function Register() {
       <div className="text-[40px] text-center text-white">
         Have an account? <a className="text-sky-500 hover:text-sky-700 cursor-pointer" onClick={handleLog}>Login Here.</a>
       </div>
+      <h1 className="text-[40px] text-center text-red-200">{notif}</h1>
     </>
   );
 }

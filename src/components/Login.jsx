@@ -21,7 +21,7 @@ function Login() {
     });
 
     const [logState, setLogState] = useState('Please Log In:')
-
+    const [notif, setNotif] = useState("");
     const [visState, setVisState] = useState('hidden');
 
     const handleChange = (e) => {
@@ -44,6 +44,13 @@ function Login() {
 
     async function doLogin(event) {
         event.preventDefault();
+        if (formData.username == "" || formData.password == "") {
+            setNotif("Username and Password can't be blank!");
+            setTimeout(function(){
+                setNotif("");
+            }, 3000)
+            return;
+        }
 
         const obj = { login: formData.username, password: formData.password };
         const js = JSON.stringify(obj);
@@ -59,15 +66,18 @@ function Login() {
 
             if (!response.ok) {
             // Handles errors like unverified email or wrong login
-            alert(res.error || 'Login failed.');
-            return;
+                setNotif(res.error || 'Login failed.');
+                setTimeout(function(){
+                    setNotif("");
+                }, 3000)
+                return;
             }
 
             // Successful login
             const user = {
-            firstName: res.firstName,
-            lastName: res.lastName,
-            id: res.id
+                firstName: res.firstName,
+                lastName: res.lastName,
+                id: res.id
             };
             
             localStorage.setItem('user_data', JSON.stringify(user));
@@ -76,7 +86,10 @@ function Login() {
             window.location.href = '/Homepage';
 
         } catch (error) {
-            alert("Network or server error: " + error.toString());
+            setNotif("Network or server error: " + error.toString());
+            setTimeout(function(){
+                setNotif("");
+            }, 3000)
         }
     }
 
@@ -109,6 +122,7 @@ function Login() {
             <div className="text-[40px] text-center text-white">
                 No account yet? <a className="text-sky-500 hover:text-sky-700 cursor-pointer" onClick={handleLog}>Register here.</a>
             </div>
+            <h1 className="text-[40px] text-center text-red-200">{notif}</h1>
         </>
     )
 }

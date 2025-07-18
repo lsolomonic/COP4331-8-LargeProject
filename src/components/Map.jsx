@@ -20,7 +20,7 @@ function MapComponent({ onMapClick }) {
     return (
         <>
             <APIProvider apiKey={import.meta.env.VITE_MAPS_API_KEY}>
-                <div className="max-w-7xl h-180 ml-auto mr-auto">
+                <div className="max-w-7xl h-160 ml-auto mr-auto">
                     <Map
                         defaultZoom={15}
                         defaultCenter={{ lat: 28.6016, lng: -81.2005 }}
