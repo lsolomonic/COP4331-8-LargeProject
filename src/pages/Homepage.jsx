@@ -1,4 +1,4 @@
-import {useState} from "react"
+import {useState, useEffect} from "react"
 import Dropdown from '../components/Dropdown'
 import MapComponent from '../components/Map'
 import { PlusIcon } from "@heroicons/react/16/solid";
@@ -9,7 +9,8 @@ function Homepage() {
     const [popupVisible, setPopupVisible] = useState('hidden');
     const [successMsg, setSuccessMsg] = useState("");
     const [addedCoords, setAddedCoords] = useState([]);
-
+    const userID = localStorage.getItem("userID");
+    const [locData, setLocData] = useState([]);
     const [notif, setNotif] = useState("");
     const [clickedLocation, setClickedLocation] = useState(null);
     const [locName, setLocName] = useState('');
@@ -76,6 +77,27 @@ function Homepage() {
         }
     }
 
+    useEffect(() => {
+        const fetchPlaces = async () => {
+            try {
+                const response = await fetch(buildPath('api/places/' + userID));
+                if (!response.ok) {
+                    alert('Failed to load your places.');
+                    return;
+                }
+
+                const data = await response.json();
+                setLocData(data);
+            } catch (error) {
+                alert('Error loading places: ' + error);
+            }
+        };
+
+        if (userID) {
+            fetchPlaces();
+        }
+    }, [userID, locData]);
+
     return (
         <>
             <div className="relative w-full h-24">
@@ -87,7 +109,7 @@ function Homepage() {
                     <Dropdown />
                 </div>
             </div>
-            <MapComponent onMapClick={handleMapClick} /> <br />
+            <MapComponent onMapClick={handleMapClick} mapPins={locData}/> <br />
             <div className="relative w-full h-24 flex items-center justify-center gap-4">
                 <h1 className="text-white text-[50px]">Options:</h1>
                 <PlusIcon className="fill-white h-20 w-20" onClick={togglePopup}/>
