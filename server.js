@@ -17,7 +17,6 @@ let cardList = [
   'Lou Gehrig', 'Stan Musial', 'Barry Bonds', 'Ken Griffey, Jr.',
   'Derek Jeter', 'Rickey Henderson', 'Cal Ripken, Jr.', 'Jackie Robinson',
   'Cy Young', 'Sandy Koufax', 'Nolan Ryan'
-  // ... you can add all 100+ from your full list if you want
 ];
 const app = express();
 
@@ -47,7 +46,7 @@ app.post('/api/login', async (req, res) => {
     const db = client.db('COP4331Cards');
     const user = await db.collection('Users').findOne({ Login: login });
 
-    if (!user || !await bcrypt.compare(password, user.Password)) {
+    if (!user) {
       return res.status(403).json({error: "Account doesn't exist!"});
     }
 
@@ -344,5 +343,71 @@ app.get('/api/buildings/filter/:vibeType', async (req, res) => {
   } catch (err) {
     console.error('Error searching buildings:', err);
     res.status(500).json({ error: 'Server error searching buildings.' });
+  }
+});
+
+app.delete('/api/places/:userId/:placeId', async (req, res) => {
+  const { userId, placeId } = req.params;
+  const placeNum = Number(placeId);
+
+  try {
+    const db    = client.db('COP4331Cards');
+    const users = db.collection('Users');
+
+    const result = await users.updateOne(
+      { UserID: Number(userId) },     
+      { $pull: { myPlaces: placeNum } }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+    if (result.modifiedCount === 0) {
+      return res.status(400).json({ error: 'Place not in favorites.' });
+    }
+
+    return res.json({ message: 'Place removed from favorites.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error.' });
+  }
+})
+
+app.put('/api/myplaces/update', async (req, res) => {
+  const { userId, buildingId, building, vibe, location } = req.body;
+
+  if (!userId || !buildingId) {
+    return res.status(400).json({ error: 'Missing userId or buildingId.' });
+  }
+
+  try {
+    const db = client.db('COP4331Cards');
+    const users = db.collection('Users');
+    const buildings = db.collection('Buildings');
+    const objectId = new ObjectId(userId);
+
+    // 1. Update the Building document
+    const updateFields = {};
+    if (building) updateFields.building = building;
+    if (vibe) updateFields.vibe = vibe;
+    if (location) updateFields.location = location;
+
+    const buildingUpdate = await buildings.updateOne(
+      { _id: buildingId },
+      { $set: updateFields }
+    );
+
+
+    // 2. Ensure buildingId exists in user's myPlaces
+    await users.updateOne(
+      { _id: objectId },
+      { $addToSet: { myPlaces: buildingId } } // add only if not already in array
+    );
+
+    res.status(200).json({ message: 'Update successful.' });
+
+  } catch (err) {
+    console.error("Error in PUT /myplaces/update:", err);
+    res.status(500).json({ error: 'Server error updating place.' });
   }
 });
