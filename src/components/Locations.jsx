@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { AdjustmentsHorizontalIcon } from '@heroicons/react/16/solid';
+import Actions from '../components/Actions';
 
 function Locations({ userID }) {
   const [locData, setLocData] = useState([]);
   const [searchData, setSearchData] = useState('');
   const [activeFilter, setActiveFilter] = useState(null);
+  const [notif, setNotif] = useState("");
 
   const handleChange = (e) => {
     setSearchData(e.target.value);
@@ -22,8 +24,10 @@ function Locations({ userID }) {
   function filterPressed(selection) {
     if (selection === 'Cancel') {
       setActiveFilter(null);
+      setNotif("")
     } else {
       setActiveFilter(selection);
+      setNotif("Filtering for: " + selection);
     }
   }
 
@@ -46,7 +50,7 @@ function Locations({ userID }) {
     if (userID) {
       fetchPlaces();
     }
-  }, [userID]);
+  }, [userID, locData]);
 
   const filteredData = locData.filter((item) => {
     const matchesSearch =
@@ -127,6 +131,7 @@ function Locations({ userID }) {
                 <th className="px-4 py-2 font-semibold">Location</th>
                 <th className="px-4 py-2 font-semibold">Name</th>
                 <th className="px-4 py-2 font-semibold">Vibe</th>
+                <th className="px-4 py-2 font-semibold">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -138,12 +143,14 @@ function Locations({ userID }) {
                   <td className="px-4 py-2">{item.location}</td>
                   <td className="px-4 py-2">{item.building}</td>
                   <td className="px-4 py-2">{item.vibe}</td>
+                  <td className="px-4 py-2"><Actions userID={localStorage.getItem("numericalId")} buildingID={item._id} buildPath={buildPath} setNotif={setNotif} /></td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </div>
+      <h1 className="text-[40px] text-center text-red-200">{notif}</h1>
     </>
   );
 }

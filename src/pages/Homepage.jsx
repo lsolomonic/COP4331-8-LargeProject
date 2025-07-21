@@ -39,6 +39,14 @@ function Homepage() {
 
     async function handleSubmit(e) {
         e.preventDefault();
+
+        if (!clickedLocation || !vibe || !locName) {
+            setNotif("Must have location, vibe, and place name!");
+            setTimeout(function(){
+                setNotif("");
+            }, 3000);
+            return;
+        }
         
         const obj = {location: clickedLocation, vibe: vibe, building: locName, userId:localStorage.getItem("userID")};
         const js = JSON.stringify(obj);         
