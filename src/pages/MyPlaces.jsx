@@ -1,10 +1,12 @@
-import {useState} from 'react';
 import Dropdown from '../components/Dropdown';
 import Locations from '../components/Locations';
 import { MenuItem } from '@headlessui/react';
-import Header from '../components/Header'
+import Header from '../components/Header';
 
 function MyPlaces() {
+  const userObj = JSON.parse(localStorage.getItem("user_data") || "{}");
+  const userID = userObj.id;
+
   return (
     <>
       <div className="relative w-full h-24">
@@ -28,7 +30,7 @@ function MyPlaces() {
         </div>
       </div>
 
-      <Locations userID={localStorage.getItem("userID")} />
+      <Locations userID={userID} />
     </>
   );
 }

@@ -143,7 +143,17 @@ function Locations({ userID }) {
                   <td className="px-4 py-2">{item.location}</td>
                   <td className="px-4 py-2">{item.building}</td>
                   <td className="px-4 py-2">{item.vibe}</td>
-                  <td className="px-4 py-2"><Actions userID={localStorage.getItem("numericalId")} buildingID={item._id} buildPath={buildPath} setNotif={setNotif} /></td>
+                  <td className="px-4 py-2">
+                    <Actions
+                      userID={userID}
+                      buildingID={item._id}
+                      buildPath={buildPath}
+                      setNotif={setNotif}
+                      currentBuilding={item.building}
+                      currentVibe={item.vibe}
+                      currentLocation={item.location}
+                    />
+                    </td>
                 </tr>
               ))}
             </tbody>

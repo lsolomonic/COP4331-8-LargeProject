@@ -350,13 +350,20 @@ app.delete('/api/places/:userId/:placeId', async (req, res) => {
   const { userId, placeId } = req.params;
 
   try {
-    const db    = client.db('COP4331Cards');
+    const db = client.db('COP4331Cards');
     const users = db.collection('Users');
 
-    const result = await users.updateOne(
-      { UserID: Number(userId) },     
-      { $pull: { myPlaces: placeNum } }
+    let result = await users.updateOne(
+      { _id: new ObjectId(userId) },
+      { $pull: { myPlaces: Number(placeId) } }
     );
+
+    if (result.matchedCount === 0) {
+      result = await users.updateOne(
+        { UserID: Number(userId) },
+        { $pull: { myPlaces: Number(placeId) } }
+      );
+    }
 
     if (result.matchedCount === 0) {
       return res.status(404).json({ error: 'User not found.' });
@@ -367,10 +374,11 @@ app.delete('/api/places/:userId/:placeId', async (req, res) => {
 
     return res.json({ message: 'Place removed from favorites.' });
   } catch (err) {
-    console.error(err);
+    console.error('DELETE /api/places error:', err);
     res.status(500).json({ error: 'Server error.' });
   }
-})
+});
+
 
 app.put('/api/myplaces/update', async (req, res) => {
   const { userId, buildingId, building, vibe, location } = req.body;
@@ -383,24 +391,26 @@ app.put('/api/myplaces/update', async (req, res) => {
     const db = client.db('COP4331Cards');
     const users = db.collection('Users');
     const buildings = db.collection('Buildings');
-    const objectId = new ObjectId(userId);
 
-    // 1. Update the Building document
+    const objectId = new ObjectId(userId);
+    const buildingIdStr = buildingId.toString();       // for Buildings collection
+    const buildingIdNum = parseInt(buildingId);        // for myPlaces array
+
+    //Update the Building document
     const updateFields = {};
     if (building) updateFields.building = building;
     if (vibe) updateFields.vibe = vibe;
     if (location) updateFields.location = location;
 
-    const buildingUpdate = await buildings.updateOne(
-      { _id: buildingId },
+    await buildings.updateOne(
+      { _id: buildingIdStr },
       { $set: updateFields }
     );
 
-
-    // 2. Ensure buildingId exists in user's myPlaces
+    //Ensure buildingId exists in user's myPlaces
     await users.updateOne(
       { _id: objectId },
-      { $addToSet: { myPlaces: buildingId } } // add only if not already in array
+      { $addToSet: { myPlaces: buildingIdNum } }  // store as number
     );
 
     res.status(200).json({ message: 'Update successful.' });
