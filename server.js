@@ -354,8 +354,8 @@ app.delete('/api/places/:userId/:placeId', async (req, res) => {
     const users = db.collection('Users');
 
     const result = await users.updateOne(
-      { _id: newObjectId(userId) },     
-      { $pull: { myPlaces: newObjectId(placeId) } }
+      { UserID: Number(userId) },     
+      { $pull: { myPlaces: placeNum } }
     );
 
     if (result.matchedCount === 0) {
