@@ -348,15 +348,14 @@ app.get('/api/buildings/filter/:vibeType', async (req, res) => {
 
 app.delete('/api/places/:userId/:placeId', async (req, res) => {
   const { userId, placeId } = req.params;
-  const placeNum = Number(placeId);
 
   try {
     const db    = client.db('COP4331Cards');
     const users = db.collection('Users');
 
     const result = await users.updateOne(
-      { UserID: Number(userId) },     
-      { $pull: { myPlaces: placeNum } }
+      { _id: newObjectId(userId) },     
+      { $pull: { myPlaces: newObjectId(placeId) } }
     );
 
     if (result.matchedCount === 0) {
