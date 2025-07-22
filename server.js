@@ -280,20 +280,18 @@ app.post('/api/places/add', async (req, res) => {
     const users = db.collection('Users');
     const buildings = db.collection('Buildings');
 
-    const buildingId = Math.floor(Math.random() * 9000) + 1000;
+    const buildingId = (Math.floor(Math.random() * 9000) + 1000).toString();
 
-    // Insert new building
     await buildings.insertOne({
-      _id: buildingId.toString(),
+      _id: buildingId,
       building,
       vibe,
       location
     });
 
-    // Update the user's myPlaces array only if it doesn't already include the building
     const updateResult = await users.updateOne(
       { _id: userObjectId },
-      { $addToSet: { myPlaces: buildingId } }
+      { $addToSet: { myPlaces: buildingId } }  // store as string
     );
 
     if (updateResult.matchedCount === 0) {
@@ -352,32 +350,46 @@ app.delete('/api/places/:userId/:placeId', async (req, res) => {
   try {
     const db = client.db('COP4331Cards');
     const users = db.collection('Users');
+    const buildings = db.collection('Buildings');
 
-    let result = await users.updateOne(
-      { _id: new ObjectId(userId) },
-      { $pull: { myPlaces: Number(placeId) } }
+    const objectId = new ObjectId(userId);
+    const buildingIdStr = placeId;
+    const buildingIdNum = parseInt(placeId);
+
+    // Step 1: Remove from user’s myPlaces array
+    const result = await users.updateOne(
+      { _id: objectId },
+      { $pull: { myPlaces: { $in: [buildingIdStr, buildingIdNum] } } }
     );
-
-    if (result.matchedCount === 0) {
-      result = await users.updateOne(
-        { UserID: Number(userId) },
-        { $pull: { myPlaces: Number(placeId) } }
-      );
-    }
 
     if (result.matchedCount === 0) {
       return res.status(404).json({ error: 'User not found.' });
     }
+
     if (result.modifiedCount === 0) {
       return res.status(400).json({ error: 'Place not in favorites.' });
     }
 
-    return res.json({ message: 'Place removed from favorites.' });
+    // Step 2: Delete building from Buildings collection
+    const buildingResult = await buildings.deleteOne({
+      $or: [
+        { _id: buildingIdStr },
+        { _id: buildingIdNum }
+      ]
+    });
+
+    if (buildingResult.deletedCount === 0) {
+      console.warn('Building not found in Buildings collection.');
+    }
+
+    return res.json({ message: 'Place removed from favorites and deleted from database.' });
+
   } catch (err) {
     console.error('DELETE /api/places error:', err);
     res.status(500).json({ error: 'Server error.' });
   }
 });
+
 
 
 app.put('/api/myplaces/update', async (req, res) => {
