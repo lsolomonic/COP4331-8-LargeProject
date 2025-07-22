@@ -353,11 +353,13 @@ app.delete('/api/places/:userId/:placeId', async (req, res) => {
     const buildings = db.collection('Buildings');
 
     const objectId = new ObjectId(userId);
-    const placeIdAsNumber = parseInt(placeId);
+    // no need to change to number if stored as a string
+    // const placeIdAsNumber = parseInt(placeId);
 
     const result = await users.updateOne(
       { _id: objectId },
-      { $pull: { myPlaces: placeIdAsNumber } }
+      { $pull: { myPlaces: placeId } }
+      //placeId used to be placeIdAsNumber
     );
 
     if (result.matchedCount === 0) {
@@ -368,7 +370,8 @@ app.delete('/api/places/:userId/:placeId', async (req, res) => {
       return res.status(400).json({ error: 'Place not in favorites.' });
     }
 
-    const deleteResult = await buildings.deleteOne({ _id: placeIdAsNumber });
+    const deleteResult = await buildings.deleteOne({ _id: placeId });
+    //used to be placeId as Number
 
     if (deleteResult.deletedCount === 0) {
       console.warn('Building not found in Buildings collection.');
@@ -413,7 +416,7 @@ app.put('/api/myplaces/update', async (req, res) => {
     //Ensure buildingId exists in user's myPlaces
     await users.updateOne(
       { _id: objectId },
-      { $addToSet: { myPlaces: buildingIdNum } }  // store as number
+      { $addToSet: { myPlaces: buildingIdStr } }  // store as number (we need string)
     );
 
     res.status(200).json({ message: 'Update successful.' });
