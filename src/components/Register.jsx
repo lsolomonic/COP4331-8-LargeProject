@@ -27,52 +27,62 @@ function Register() {
     }));
   };
 
-  async function doRegister(event) {
-    event.preventDefault();
+async function doRegister(event) {
+  event.preventDefault();
 
-    const obj = {
-      login: formData.username,
-      password: formData.password,
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      email: formData.email
-    };
+  const { username, password, firstName, lastName, email } = formData;
 
-    const js = JSON.stringify(obj);
+  if (!username || !password || !firstName || !lastName || !email) {
+    setNotif("All fields are required.");
+    setTimeout(() => setNotif(""), 3000);
+    return;
+  }
 
-    try {
-      const response = await fetch(buildPath('register'), {
-        method: 'POST',
-        body: js,
-        headers: { 'Content-Type': 'application/json' }
-      });
+  const digitCount = (password.match(/\d/g) || []).length;
+  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+  if (digitCount < 2 || !hasSpecialChar) {
+    setNotif("Password must contain at least 2 digits and 1 special character.");
+    setTimeout(() => setNotif(""), 3000);
+    return;
+  }
+
+  const obj = {
+    login: username,
+    password: password,
+    firstName: firstName,
+    lastName: lastName,
+    email: email
+  };
+
+  const js = JSON.stringify(obj);
+
+  try {
+    const response = await fetch(buildPath('register'), {
+      method: 'POST',
+      body: js,
+      headers: { 'Content-Type': 'application/json' }
+    });
 
     const res = await response.json();
 
-      if (!response.ok) {
-        // Handle errors like username taken
-        setNotif(res.error || "Registration failed.");
-        setTimeout(function(){
-            setNotif("");
-        }, 3000)
-        return;
-      }
-
-      const user = {
-        firstName: res.firstName,
-        lastName: res.lastName,
-        id: res.id
-      };
-      localStorage.setItem('user_data', JSON.stringify(user));
-      window.location.href = '/';
-
-    } catch (error) {
-      setNotif("Network or server error: " + error.toString());
-      setTimeout(function(){
-          setNotif("");
-      }, 3000)
+    if (!response.ok) {
+      setNotif(res.error || "Registration failed.");
+      setTimeout(() => setNotif(""), 3000);
+      return;
     }
+
+    const user = {
+      firstName: res.firstName,
+      lastName: res.lastName,
+      id: res.id
+    };
+    localStorage.setItem('user_data', JSON.stringify(user));
+    window.location.href = '/';
+  } catch (error) {
+    setNotif("Network or server error: " + error.toString());
+    setTimeout(() => setNotif(""), 3000);
   }
+}
 
   const navigate = useNavigate();
 

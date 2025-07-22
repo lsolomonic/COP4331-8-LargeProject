@@ -98,6 +98,9 @@ function Login() {
     const handleLog = () => {
         navigate('/Registerpage');
     };
+    const handleReset = () => {
+        navigate('/ForgotPassword')
+    }
 
     return (
         <>
@@ -121,6 +124,9 @@ function Login() {
             </form>
             <div className="text-[40px] text-center text-white">
                 No account yet? <a className="text-sky-500 hover:text-sky-700 cursor-pointer" onClick={handleLog}>Register here.</a>
+            </div>
+            <div className="text-[40px] text-center text-white">
+                <a className="text-sky-500 hover:text-sky-700 cursor-pointer" onClick={handleReset}>Forgot Password?</a>
             </div>
             <h1 className="text-[40px] text-center text-red-200">{notif}</h1>
         </>

@@ -426,3 +426,90 @@ app.put('/api/myplaces/update', async (req, res) => {
     res.status(500).json({ error: 'Server error updating place.' });
   }
 });
+
+app.post('/api/forgot-password', async (req, res) => {
+  const { username, email } = req.body;
+
+  if (!username || !email) {
+    return res.status(400).json({ error: 'Username and email required.' });
+  }
+
+  try {
+    const db = client.db('COP4331Cards');
+    const users = db.collection('Users');
+
+    const user = await users.findOne({ Login: username, Email: email });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+
+    const token = crypto.randomBytes(32).toString('hex');
+    const expiration = new Date(Date.now() + 1000 * 60 * 60); // 1 hour
+
+    await users.updateOne(
+      { _id: user._id },
+      { $set: { ResetToken: token, ResetTokenExpiration: expiration } }
+    );
+
+    const origin = req.get('origin');
+    const isDev = origin && origin.includes('localhost');
+    const resetLink = `${isDev ? 'http://localhost:5173' : process.env.CLIENT_URL}/reset/${token}`;
+
+    const msg = {
+      to: email,
+      from: process.env.SENDGRID_FROM,
+      subject: 'Reset your password',
+      html: `
+        <h2>Reset Password</h2>
+        <p>Click below to reset your password:</p>
+        <a href="${resetLink}">${resetLink}</a>
+        <p>This link expires in 1 hour.</p>
+      `
+    };
+
+    await sgMail.send(msg);
+    res.status(200).json({ message: 'Password reset email sent.' });
+  } catch (err) {
+    console.error('Forgot password error:', err);
+    res.status(500).json({ error: 'Server error sending reset email.' });
+  }
+});
+
+app.post('/api/reset-password', async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  if (!token || !newPassword) {
+    return res.status(400).json({ error: 'Token and password required.' });
+  }
+
+  try {
+    const db = client.db('COP4331Cards');
+    const users = db.collection('Users');
+
+    const user = await users.findOne({
+      ResetToken: token,
+      ResetTokenExpiration: { $gt: new Date() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ error: 'Invalid or expired token.' });
+    }
+
+    const hash = await bcrypt.hash(newPassword, saltRounds);
+
+    await users.updateOne(
+      { _id: user._id },
+      {
+        $set: { Password: hash },
+        $unset: { ResetToken: "", ResetTokenExpiration: "" }
+      }
+    );
+
+    res.status(200).json({ message: 'Password successfully reset.' });
+  } catch (err) {
+    console.error('Reset password error:', err);
+    res.status(500).json({ error: 'Server error resetting password.' });
+  }
+});
+
