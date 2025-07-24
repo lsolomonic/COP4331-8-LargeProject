@@ -119,7 +119,7 @@ function Homepage() {
             </div>
             <MapComponent onMapClick={handleMapClick} mapPins={locData}/> <br />
             <div className="relative w-full h-24 flex items-center justify-center gap-4">
-                <h1 className="text-white text-[50px]">Options:</h1>
+                <h1 className="text-white text-[50px]">Add Place:</h1>
                 <PlusIcon className="fill-white h-20 w-20" onClick={togglePopup}/>
                 {successMsg && (
                 <div className="absolute top-full mt-2 text-white text-lg font-semibold">{successMsg}</div>

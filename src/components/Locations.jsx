@@ -77,7 +77,7 @@ function Locations({ userID }) {
 
         {/* Filter Dropdown */}
         <Menu>
-          <MenuButton name="filter" className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none hover:bg-gray-800 ml-2">
+          <MenuButton name="filter" aria-label="filter places" className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none hover:bg-gray-800 ml-2">
             <AdjustmentsHorizontalIcon className="w-10 h-10 mt-1" />
           </MenuButton>
 

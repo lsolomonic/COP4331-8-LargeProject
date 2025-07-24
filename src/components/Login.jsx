@@ -119,7 +119,7 @@ function Login() {
                 </div>
                 <button 
                     onClick={handleSubmit}
-                    type="submit" className="border-black bg-sky-500 hover:bg-sky-700 border-2 rounded-3xl w-100 text-center mt-5">Continue</button>
+                    type="submit" className="border-black bg-sky-500 hover:bg-sky-700 border-2 rounded-3xl w-100 text-center mt-5 text-black">Continue</button>
                 </div>
             </form>
             <div className="text-[40px] text-center text-white">
