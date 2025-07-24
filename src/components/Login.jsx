@@ -107,14 +107,14 @@ function Login() {
             <div id="logState" className="text-[50px] text-center text-white">{logState}</div>
             <form onSubmit={handleSubmit}>
                 <div id="loginDiv" className="text-[40px] text-center bg-gray-400 rounded-xl text-white w-full max-w-lg mx-auto p-6">  
-                <input type="text" name="username" value={formData.username} onChange={handleChange} className="border-2 border-black rounded-2xl text-center mt-5" placeholder="Username" required></input> <br /> 
-                <input type="password" name="password" value={formData.password} onChange={handleChange} className="border-2 border-black rounded-2xl text-center mt-5" placeholder="Password" required></input> <br />
+                <input type="text" name="username" value={formData.username} onChange={handleChange} className="border-2 border-black rounded-2xl text-center mt-5 text-black" placeholder="Username" required></input> <br /> 
+                <input type="password" name="password" value={formData.password} onChange={handleChange} className="border-2 border-black rounded-2xl text-center mt-5 text-black" placeholder="Password" required></input> <br />
                 <div id="regDiv" className={visState}>
-                    <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} className="border-2 border-black rounded-2xl text-center mt-5" placeholder="First Name" />
+                    <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} className="border-2 border-black rounded-2xl text-center mt-5 text-black" placeholder="First Name" />
                     <br />
-                    <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} className="border-2 border-black rounded-2xl text-center mt-5" placeholder="Last Name" />
+                    <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} className="border-2 border-black rounded-2xl text-center mt-5 text-black" placeholder="Last Name" />
                     <br />
-                    <input type="email" name="email" value={formData.email} onChange={handleChange} className="border-2 border-black rounded-2xl text-center mt-5" placeholder="Email" required />
+                    <input type="email" name="email" value={formData.email} onChange={handleChange} className="border-2 border-black rounded-2xl text-center mt-5 text-black" placeholder="Email" required />
                     <br />
                 </div>
                 <button 

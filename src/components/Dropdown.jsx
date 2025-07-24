@@ -13,7 +13,7 @@ import {
 function Dropdown({ children }) {
   return (
     <Menu>
-      <MenuButton className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-800 data-open:bg-gray-800">
+      <MenuButton name="dropdown" className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-800 data-open:bg-gray-800">
         <Bars3Icon className="w-20 h-20" />
         <ChevronDownIcon className="size-4 fill-white/60" />
       </MenuButton>

@@ -77,7 +77,7 @@ function Locations({ userID }) {
 
         {/* Filter Dropdown */}
         <Menu>
-          <MenuButton className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none hover:bg-gray-800 ml-2">
+          <MenuButton name="filter" className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none hover:bg-gray-800 ml-2">
             <AdjustmentsHorizontalIcon className="w-10 h-10 mt-1" />
           </MenuButton>
 
@@ -126,7 +126,7 @@ function Locations({ userID }) {
       <div className="max-w-7xl mx-auto mt-10 pg-4 bg-white shadow rounded text-center">
         <div className="overflow-y-scroll max-h-100 border rounded">
           <table className="min-w-full text-left text-sm">
-            <thead className="bg-gray-400 text-white sticky top-0 text-2xl rounded-xl">
+            <thead className="bg-gray-400 text-black sticky top-0 text-2xl rounded-xl">
               <tr>
                 <th className="px-4 py-2 font-semibold">Location</th>
                 <th className="px-4 py-2 font-semibold">Name</th>

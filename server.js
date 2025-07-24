@@ -121,11 +121,10 @@ app.post('/api/register', async (req, res) => {
     if (existing)
       return res.status(409).json({ error: 'Username already exists, Please Login' });
 
-    const max = await users.find().sort({ UserID: -1 }).limit(1).toArray();
+    const max    = await users.find().sort({ UserID: -1 }).limit(1).toArray();
     const nextId = max.length ? max[0].UserID + 1 : 1;
 
-    const hash = await bcrypt.hash(password, saltRounds);
-
+    const hash  = await bcrypt.hash(password, saltRounds);
     const token = crypto.randomBytes(32).toString('hex');
 
     const newUser = {
@@ -133,7 +132,7 @@ app.post('/api/register', async (req, res) => {
       Login: login,
       Password: hash,
       FirstName: firstName,
-      LastName:  lastName,
+      LastName: lastName,
       Email: email,
       myPlaces: [],
       Verified: false,
@@ -141,21 +140,26 @@ app.post('/api/register', async (req, res) => {
     };
     await users.insertOne(newUser);
 
-    const origin = req.get('origin');
-    const isDev = origin && origin.includes('localhost');
-    const verificationUrl = `${isDev ? 'http://localhost:5173' : process.env.CLIENT_URL}/verify/${token}`;
+    // build web link vs dev vs prod
+    const origin       = req.get('origin');
+const isDev        = origin && origin.includes('localhost');
+const verifyPage   = isDev
+  ? 'http://localhost:5000'
+  : process.env.SERVER_URL;            // e.g. https://group12cop4331.xyz
 
-    const msg = {
-      to: email,
-      from: process.env.SENDGRID_FROM,
-      subject: 'Verify your email address',
-      html: `
-        <h2>Welcome to our app, ${firstName}!</h2>
-        <p>Please verify your email by clicking the link below:</p>
-        <a href="${verificationUrl}">Verify Email</a>
-        <p>If you did not sign up, you can ignore this email.</p>
-      `
-    };
+const verificationLink = `${verifyPage}/api/verify/${token}/page`
+
+const msg = {
+  to: email,
+  from: process.env.SENDGRID_FROM,
+  subject: 'Welcome! Please verify your email',
+  html: `
+    <h2>Welcome, ${firstName}!</h2>
+    <p>Click the link below to verify your email and then log in:</p>
+    <p><a href="${verificationLink}">Verify &amp; Log In</a></p>
+    <p>If you did not sign up, simply ignore this email.</p>
+  `
+};
 
     await sgMail.send(msg);
 
@@ -169,7 +173,7 @@ app.post('/api/register', async (req, res) => {
     console.error('Register error:', err);
     res.status(500).json({ error: 'Server error creating account.' });
   }
-})
+});
 
 app.post('/api/reviews', async (req, res) => {
   const { user, building, vibes, comment } = req.body;
@@ -237,7 +241,52 @@ app.get('/api/verify/:token', async (req, res) => {
     res.status(500).json({ error: 'Server error verifying email.' });
   }
 })
+app.get('/api/verify/:token/page', async (req, res) => {
+  const { token } = req.params;
+  try {
+    const db    = client.db('COP4331Cards');
+    const users = db.collection('Users');
 
+    const user = await users.findOne({ VerificationToken: token });
+    if (!user) {
+      return res
+        .status(400)
+        .send(`<h1>Verification failed</h1><p>Invalid or expired token.</p>`);
+    }
+
+    // mark verified
+    await users.updateOne(
+      { VerificationToken: token },
+      { $set: { Verified: true }, $unset: { VerificationToken: "" } }
+    );
+
+const webAppHome = process.env.CLIENT_URL || 'http://group12cop4331.xyz';  
+res.send(`
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta charset="utf-8">
+      <title>Email Verified</title>
+      <!-- redirect to home instead of /login -->
+      <meta http-equiv="refresh" content="5;url=${webAppHome}" />
+      <style>
+        body { font-family: sans-serif; text-align: center; padding: 2rem; }
+        a { color: #007BFF; text-decoration: none; }
+      </style>
+    </head>
+    <body>
+      <h1>✅ Your email is verified!</h1>
+      <p>You will be redirected to the home page in 5 seconds.</p>
+      <p><a href="${webAppHome}">Or click here to go to the home page now</a></p>
+    </body>
+  </html>
+`);
+
+  } catch (err) {
+    console.error('Error serving verify page:', err);
+    res.status(500).send('<h1>Server error</h1><p>Please try again later.</p>');
+  }
+});
 app.get('/api/places/:userId', async (req, res) => {
   const userId = req.params.userId;
 
@@ -512,4 +561,3 @@ app.post('/api/reset-password', async (req, res) => {
     res.status(500).json({ error: 'Server error resetting password.' });
   }
 });
-

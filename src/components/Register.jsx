@@ -100,7 +100,7 @@ async function doRegister(event) {
             name="username"
             value={formData.username}
             onChange={handleChange}
-            className="border-2 border-black rounded-2xl text-center mt-5"
+            className="border-2 border-black rounded-2xl text-center mt-5 text-black"
             placeholder="Username"
             required
           /> <br />
@@ -109,7 +109,7 @@ async function doRegister(event) {
             name="password"
             value={formData.password}
             onChange={handleChange}
-            className="border-2 border-black rounded-2xl text-center mt-5"
+            className="border-2 border-black rounded-2xl text-center mt-5 text-black"
             placeholder="Password"
             required
           /> <br />
@@ -118,7 +118,7 @@ async function doRegister(event) {
             name="firstName"
             value={formData.firstName}
             onChange={handleChange}
-            className="border-2 border-black rounded-2xl text-center mt-5"
+            className="border-2 border-black rounded-2xl text-center mt-5  text-black"
             placeholder="First Name"
             required
           /> <br />
@@ -127,7 +127,7 @@ async function doRegister(event) {
             name="lastName"
             value={formData.lastName}
             onChange={handleChange}
-            className="border-2 border-black rounded-2xl text-center mt-5"
+            className="border-2 border-black rounded-2xl text-center mt-5 text-black"
             placeholder="Last Name"
             required
           /> <br />
@@ -136,7 +136,7 @@ async function doRegister(event) {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className="border-2 border-black rounded-2xl text-center mt-5"
+            className="border-2 border-black rounded-2xl text-center mt-5 text-black"
             placeholder="Email"
             required
           /> <br />
